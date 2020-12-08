@@ -1,6 +1,14 @@
 namespace SpriteKind {
-    export const Nothing = SpriteKind.create()
+    export const Enemy_2 = SpriteKind.create()
 }
+sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Enemy_2, function (sprite, otherSprite) {
+    Hero_Red.say("Yahoo!!!", 5000)
+    Hero_Green.say("Yahoo!!!")
+    Big_Boss.say("Noooo!!!!!")
+    Big_Boss.destroy(effects.fire, 5000)
+    pause(5000)
+    game.over(true)
+})
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     projectile2 = sprites.createProjectileFromSprite(img`
         . . . . . . . . . . . . . . . . 
@@ -20,22 +28,41 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
         . . . . . . . . . . . . . . . . 
         . . . . . . . . . . . . . . . . 
         `, Hero_Green, 40, 0)
-    music.pewPew.play()
-})
-sprites.onOverlap(SpriteKind.Enemy, SpriteKind.Player, function (sprite, otherSprite) {
-    Hero_Green.destroy(effects.fire, 2000)
-    pause(2000)
-    game.over(false)
+    scene.cameraShake(2, 100)
 })
 sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Enemy, function (sprite, otherSprite) {
     Enemy1.destroy(effects.fire, 2000)
-    Enemy1.destroy(effects.disintegrate, 1000)
     pause(2000)
-    game.over(true)
+    game.showLongText("You Win! Uh-oh. Another boss!", DialogLayout.Center)
+    Big_Boss = sprites.create(img`
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . 6 6 6 6 6 6 6 6 6 6 . 
+        . . . . . 9 5 5 9 9 9 9 9 9 6 . 
+        . . . . . 9 9 9 9 9 9 9 9 9 6 . 
+        . . . . . 6 6 6 6 6 6 6 6 6 6 . 
+        . . . . . 6 6 6 6 2 2 2 2 6 6 . 
+        . . . . . 6 6 6 6 6 6 6 2 6 6 . 
+        . . . . . 6 2 2 2 2 6 6 2 6 6 . 
+        . . . . . 6 6 6 6 6 6 6 6 6 6 . 
+        . . . . . 6 6 6 2 6 6 6 6 6 6 . 
+        . . . . . 6 6 6 2 6 6 6 6 6 6 . 
+        . . . . . 6 6 6 2 2 2 2 6 6 6 . 
+        . . . . . 6 6 6 6 6 6 6 6 6 6 . 
+        . . . . . 6 6 6 6 6 6 6 6 6 6 . 
+        . . . . . . 1 1 . . . . 1 1 . . 
+        `, SpriteKind.Enemy_2)
+    Big_Boss.setPosition(143, 65)
+    Big_Boss.follow(Hero_Green, 2)
+    Big_Boss.startEffect(effects.halo, 1000)
+    Big_Boss.startEffect(effects.halo, 1000)
+    Big_Boss.startEffect(effects.halo, 1000)
 })
 let projectile: Sprite = null
 let projectile2: Sprite = null
+let Big_Boss: Sprite = null
 let Enemy1: Sprite = null
+let Hero_Red: Sprite = null
 let Hero_Green: Sprite = null
 Hero_Green = sprites.create(img`
     . . . . . . . . . . . . . . . . 
@@ -56,7 +83,7 @@ Hero_Green = sprites.create(img`
     . . . . . . . . . . . . . . . . 
     `, SpriteKind.Player)
 Hero_Green.setPosition(14, 65)
-let Hero_Red = sprites.create(img`
+Hero_Red = sprites.create(img`
     . . . . . . . . . . . . . . . . 
     . . . . . . . . . . . . . . . . 
     . . . . . . . . . . . . . . . . 
@@ -93,27 +120,7 @@ Enemy1 = sprites.create(img`
     . . . . . . . . . . . . . . . . 
     . . . . . . . . . . . . . . . . 
     `, SpriteKind.Enemy)
-Enemy1.setPosition(140, 65)
-let Empty_move_acrosst_road = sprites.create(img`
-    . . . . . . . . . . . . . . . . 
-    . . . . . . . . . . . . . . . . 
-    . . . . . . . . . . . . . . . . 
-    . . . . . . . . . . . . . . . . 
-    . . . . . . . . . . . . . . . . 
-    . . . . . . . . . . . . . . . . 
-    . . . . . . . . . . . . . . . . 
-    . . . . . . . . . . . . . . . . 
-    . . . . . . . . . . . . . . . . 
-    . . . . . . . . . . . . . . . . 
-    . . . . . . . . . . . . . . . . 
-    . . . . . . . . . . . . . . . . 
-    . . . . . . . . . . . . . . . . 
-    . . . . . . . . . . . . . . . . 
-    . . . . . . . . . . . . . . . . 
-    . . . . . . . . . . . . . . . . 
-    `, SpriteKind.Nothing)
-Empty_move_acrosst_road.setPosition(14, 65)
-Enemy1.follow(Empty_move_acrosst_road, 3)
+Enemy1.setPosition(140, 59)
 scene.setBackgroundImage(img`
     eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
     eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
@@ -237,8 +244,10 @@ scene.setBackgroundImage(img`
     eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
     `)
 controller.moveSprite(Hero_Green)
+Enemy1.follow(Hero_Green, 2)
+Enemy1.startEffect(effects.halo, 1000)
 forever(function () {
-    pause(1000)
+    Hero_Red.setPosition(13, 38)
     projectile = sprites.createProjectileFromSprite(img`
         . . . . . . . . . . . . . . . . 
         . . . . . . . . . . . . . . . . 
@@ -257,4 +266,7 @@ forever(function () {
         . . . . . . . . . . . . . . . . 
         . . . . . . . . . . . . . . . . 
         `, Hero_Red, 40, 0)
+    pause(1000)
+    Hero_Red.setPosition(13, 34)
+    pause(1000)
 })
